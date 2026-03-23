@@ -4,6 +4,7 @@ import com.example.demo.dao.ArticleRepository;
 import com.example.demo.dao.CategoryRepository;
 import com.example.demo.entities.Article;
 import com.example.demo.entities.Category;
+import com.example.demo.service.ArticleService;
 import java.util.Optional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -65,6 +66,13 @@ public class DemoApplication implements CommandLineRunner {
         System.out.println(article);
     }
 
+    //Exercice 1.4
+
+    //articleRepository.deleteById(1L);
+
+    //Exercice 1.5
+    ArticleService articleService = new ArticleService(articleRepository);
+    articleService.updateArticle(2L, "Samsung", "S10 Updated", 550);
 
   }
 }
