@@ -4,6 +4,7 @@ import com.example.demo.dao.ArticleRepository;
 import com.example.demo.dao.CategoryRepository;
 import com.example.demo.entities.Article;
 import com.example.demo.entities.Category;
+import java.util.Optional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -48,12 +49,18 @@ public class DemoApplication implements CommandLineRunner {
 //    articleRepository.save(new Article("Ipad", "Apple", 350, tablet));
 //
 //    articleRepository.save(new Article("R510", "Asus", 600, pc));
-      for (Article article : articleRepository.findByCategoryId(4)) {
-        System.out.println(article);
-      }
+//      for (Article article : articleRepository.findByCategoryId(4)) {
+//        System.out.println(article);
+//      }
 
-//
-//    }
+    Optional<Article> articleById = articleRepository.findById(1L);
+    System.out.println(articleById);
+
+
+    for (Article article : articleRepository.findAll()) {
+        System.out.println(article);
+    }
+
 
   }
 }
