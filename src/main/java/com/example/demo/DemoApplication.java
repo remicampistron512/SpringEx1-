@@ -56,6 +56,10 @@ public class DemoApplication implements CommandLineRunner {
     Optional<Article> articleById = articleRepository.findById(1L);
     System.out.println(articleById);
 
+    //Exercice 1.3
+    for (Article article : articleRepository.findByDescriptionAndBrand("Samsung","Samsung")) {
+      System.out.println(article);
+    }
 
     for (Article article : articleRepository.findAll()) {
         System.out.println(article);
