@@ -215,11 +215,7 @@ public class ConsoleMenus {
     String categoryName = in.nextLine().trim();
 
 
-    Object[] resultCat = categoryRepository.findMinAndMaxId();
 
-
-    Category category = categoryRepository.findById(categoryId)
-        .orElseThrow(() -> new IllegalArgumentException("Catégorie introuvable"));
 
     categoryService.updateCategory(categoryId, categoryName);
 
@@ -227,6 +223,23 @@ public class ConsoleMenus {
   }
 
   private void displayAllArticlesFromCategoryMenu() {
+    System.out.println("Entrer l'id de la catégorie à afficher ");
+    for (Category category : categoryRepository.findAll()) {
+      System.out.println(category);
+    }
+    Object[] result = categoryRepository.findMinAndMaxId();
+    Object[] row = (Object[]) result[0];
+
+    long minId = ((Number) row[0]).longValue();
+    long maxId = ((Number) row[1]).longValue();
+
+    int min = (int) minId;
+    int max = (int) maxId;
+
+    int categoryId = readInt(CHOICE_TEXT, min, max);
+    for (Article article : articleRepository.findByCategoryId(categoryId)){
+      System.out.println(article);
+    }
   }
 
   private int readInt(String prompt, int min, int max) {
