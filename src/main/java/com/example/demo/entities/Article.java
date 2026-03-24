@@ -92,4 +92,8 @@ public class Article implements Serializable {
         ", category=" + (category != null ? category.getId() : null) + " " + (category != null ? category.getName() : null) +
         '}';
   }
+
+  public void setCategory(Category category) {
+    this.category = category;
+  }
 }

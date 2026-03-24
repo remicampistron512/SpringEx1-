@@ -4,6 +4,7 @@ import com.example.demo.dao.ArticleRepository;
 import com.example.demo.dao.CategoryRepository;
 import com.example.demo.entities.Article;
 import com.example.demo.entities.Category;
+import com.example.demo.service.ArticleService;
 import java.util.Scanner;
 
 public class ConsoleMenus {
@@ -117,6 +118,49 @@ public class ConsoleMenus {
   }
 
   private void modifyArticleMenu() {
+    System.out.println("Entrer l'id de l'article à modifier ");
+    for (Article article : articleRepository.findAll()) {
+      System.out.println(article);
+    }
+
+    Object[] result = articleRepository.findMinAndMaxId();
+    Object[] row = (Object[]) result[0];
+
+    long minId = ((Number) row[0]).longValue();
+    long maxId = ((Number) row[1]).longValue();
+
+    int min = (int) minId;
+    int max = (int) maxId;
+
+    long articleId = readInt(CHOICE_TEXT, min, max);
+    ArticleService articleService = new ArticleService(articleRepository);
+
+    System.out.println("Entrer la marque ");
+    String brand = in.nextLine().trim();
+    System.out.println("Entrer une description");
+    String description = in.nextLine().trim();
+    System.out.println("Renseigner le prix");
+    double price = in.nextInt();
+    System.out.println("Choisissez la catégorie");
+    for (Category category : categoryRepository.findAll()){
+      System.out.println(category.getId() + ")  " + category.getName());
+    }
+
+    Object[] resultCat = categoryRepository.findMinAndMaxId();
+    Object[] rowCat = (Object[]) resultCat[0];
+
+    long minIdCat = ((Number) rowCat[0]).longValue();
+    long maxIdCat = ((Number) rowCat[1]).longValue();
+
+    int intMinIdCat = (int) minIdCat;
+    int intMaxIdCat = (int) maxIdCat;
+
+    long categoryId = readInt(CHOICE_TEXT, intMinIdCat, intMaxIdCat);
+    Category category = categoryRepository.findById(categoryId)
+        .orElseThrow(() -> new IllegalArgumentException("Catégorie introuvable"));
+
+    articleService.updateArticle(articleId, brand, description, price,category);
+
   }
 
   private void addCategoryMenu() {
