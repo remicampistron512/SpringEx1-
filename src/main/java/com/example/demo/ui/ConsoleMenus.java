@@ -94,9 +94,26 @@ public class ConsoleMenus {
   }
 
   private void displayArticleMenu() {
+
   }
 
   private void deleteArticleMenu() {
+    System.out.println("Entrer l'id de l'article à supprimer ");
+    for (Article article : articleRepository.findAll()) {
+      System.out.println(article);
+    }
+    Object[] result = articleRepository.findMinAndMaxId();
+    Object[] row = (Object[]) result[0];
+
+    long minId = ((Number) row[0]).longValue();
+    long maxId = ((Number) row[1]).longValue();
+
+    int min = (int) minId;
+    int max = (int) maxId;
+
+    long articleId = readInt(CHOICE_TEXT, min, max);
+    articleRepository.deleteById(articleId);
+    System.out.println("L'article a bien été supprimé ");
   }
 
   private void modifyArticleMenu() {
