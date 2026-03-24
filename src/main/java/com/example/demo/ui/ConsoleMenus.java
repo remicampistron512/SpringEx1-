@@ -7,6 +7,9 @@ import com.example.demo.entities.Category;
 import com.example.demo.service.ArticleService;
 import com.example.demo.service.CategoryService;
 import java.util.Scanner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 public class ConsoleMenus {
 
@@ -41,8 +44,8 @@ public class ConsoleMenus {
 
         int choice = readInt(CHOICE_TEXT, 0, 12);
         switch (choice) {
-          case 1 -> displayArticlesPagingMenu();
-          case 2 -> displayArticlesNoPagingMenu();
+          case 1 -> displayArticlesNoPagingMenu();
+          case 2 -> displayArticlesPagingMenu(5);
           case 3 -> addArticleMenu();
           case 4 -> displayArticleMenu();
           case 5 -> deleteArticleMenu();
@@ -58,7 +61,70 @@ public class ConsoleMenus {
       }
     }
 
-  private void displayArticlesPagingMenu() {
+  private void displayArticlesPagingMenu(int pageSize) {
+    int pageNumber = 0;
+    boolean running = true;
+
+    while (running) {
+      Pageable pageable = PageRequest.of(pageNumber, pageSize);
+      Page<Article> page = articleRepository.findAll(pageable);
+
+      System.out.println();
+      System.out.println("=== ARTICLES ===");
+
+      if (page.isEmpty()) {
+        System.out.println("Aucun article trouvé.");
+        return;
+      }
+
+      System.out.println("Page " + (pageNumber + 1) + " / " + page.getTotalPages());
+      System.out.println("Nombre total d'articles : " + page.getTotalElements());
+      System.out.println();
+
+      for (Article article : page.getContent()) {
+        System.out.println(article);
+      }
+
+      System.out.println();
+      System.out.println("[N] page suivante");
+      System.out.println("[P] page précédente");
+      System.out.println("[PAGE] pour définir le nombre de lignes par page");
+      System.out.println("[Q] quitter");
+
+      String choice = in.nextLine().trim().toUpperCase();
+
+      switch (choice) {
+        case "N":
+          if (page.hasNext()) {
+            pageNumber++;
+          } else {
+            System.out.println("Vous êtes déjà sur la dernière page.");
+          }
+          break;
+
+        case "P":
+          if (page.hasPrevious()) {
+            pageNumber--;
+          } else {
+            System.out.println("Vous êtes déjà sur la première page.");
+          }
+          break;
+
+        case "Q":
+          running = false;
+          break;
+
+        case "PAGE":
+          System.out.println("Combien de lignes par page ?");
+          int  nbPages  = in.nextInt();
+          displayArticlesPagingMenu(nbPages);
+          break;
+
+        default:
+          System.out.println("Choix invalide.");
+      }
+    }
+
   }
 
   private void displayArticlesNoPagingMenu() {
