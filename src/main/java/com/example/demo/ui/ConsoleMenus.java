@@ -174,7 +174,22 @@ public class ConsoleMenus {
   }
 
   private void deleteCategoryMenu() {
+    System.out.println("Entrer l'id de la catégorie à supprimer ");
+    for (Category category : categoryRepository.findAll()) {
+      System.out.println(category);
+    }
+    Object[] result = categoryRepository.findMinAndMaxId();
+    Object[] row = (Object[]) result[0];
 
+    long minId = ((Number) row[0]).longValue();
+    long maxId = ((Number) row[1]).longValue();
+
+    int min = (int) minId;
+    int max = (int) maxId;
+
+    long categoryId = readInt(CHOICE_TEXT, min, max);
+    categoryRepository.deleteById(categoryId);
+    System.out.println("La catégorie a bien été supprimée ");
   }
 
   private void modifyCategoryMenu() {
