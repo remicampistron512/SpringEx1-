@@ -14,14 +14,11 @@ import java.util.Collection;
 @Entity
 public class Article implements Serializable {
   private static final long serialVersionUID = 1L;
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   private String brand;
-
-
   private String description;
   private double price;
 
@@ -49,6 +46,8 @@ public class Article implements Serializable {
     this.price = price;
     this.category = category;
   }
+
+
 
 
   public Long getId() {

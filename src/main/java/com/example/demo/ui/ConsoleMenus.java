@@ -3,6 +3,7 @@ package com.example.demo.ui;
 import com.example.demo.dao.ArticleRepository;
 import com.example.demo.dao.CategoryRepository;
 import com.example.demo.entities.Article;
+import com.example.demo.entities.Category;
 import java.util.Scanner;
 
 public class ConsoleMenus {
@@ -64,7 +65,32 @@ public class ConsoleMenus {
     }
   }
 
+
   private void addArticleMenu() {
+    System.out.println("Entrer la marque ");
+    String brand = in.nextLine().trim();
+    System.out.println("Entrer une description");
+    String description = in.nextLine().trim();
+    System.out.println("Renseigner le prix");
+    double price = in.nextInt();
+    System.out.println("Choisissez la catégorie");
+    for (Category category : categoryRepository.findAll()){
+      System.out.println(category.getId() + ")  " + category.getName());
+    }
+
+    Object[] result = categoryRepository.findMinAndMaxId();
+    Object[] row = (Object[]) result[0];
+
+    long minId = ((Number) row[0]).longValue();
+    long maxId = ((Number) row[1]).longValue();
+
+    int min = (int) minId;
+    int max = (int) maxId;
+    long categoryId = readInt(CHOICE_TEXT, min, max);
+    Category category = categoryRepository.findById(categoryId)
+        .orElseThrow(() -> new IllegalArgumentException("Catégorie introuvable"));
+
+    articleRepository.save(new Article(description, brand, price, category));
   }
 
   private void displayArticleMenu() {
