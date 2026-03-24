@@ -74,5 +74,16 @@ public class DemoApplication implements CommandLineRunner {
     ArticleService articleService = new ArticleService(articleRepository);
     articleService.updateArticle(2L, "Samsung", "S10 Updated", 550);
 
+    //Exercice 1.6
+
+    for (Category category : categoryRepository.findAll()){
+      System.out.println(category);
+    }
+
+    //Exercice 1.7
+
+    for (Article article : articleRepository.findAll()) {
+      System.out.println(article);
+    }
   }
 }

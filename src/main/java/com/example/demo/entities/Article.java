@@ -90,7 +90,7 @@ public class Article implements Serializable {
         ", brand='" + brand + '\'' +
         ", description='" + description + '\'' +
         ", price=" + price +
-        ", category=" + (category != null ? category.getId() : null) +
+        ", category=" + (category != null ? category.getId() : null) + " " + (category != null ? category.getName() : null) +
         '}';
   }
 }
