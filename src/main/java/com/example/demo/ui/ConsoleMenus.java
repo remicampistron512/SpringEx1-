@@ -5,6 +5,7 @@ import com.example.demo.dao.CategoryRepository;
 import com.example.demo.entities.Article;
 import com.example.demo.entities.Category;
 import com.example.demo.service.ArticleService;
+import com.example.demo.service.CategoryService;
 import java.util.Scanner;
 
 public class ConsoleMenus {
@@ -193,6 +194,36 @@ public class ConsoleMenus {
   }
 
   private void modifyCategoryMenu() {
+    System.out.println("Entrer l'id de la catégorie à modifier ");
+    for (Category category : categoryRepository.findAll()) {
+      System.out.println(category);
+    }
+    CategoryService categoryService = new CategoryService(categoryRepository);
+    Object[] result = categoryRepository.findMinAndMaxId();
+    Object[] row = (Object[]) result[0];
+
+    long minId = ((Number) row[0]).longValue();
+    long maxId = ((Number) row[1]).longValue();
+
+    int min = (int) minId;
+    int max = (int) maxId;
+
+    long categoryId = readInt(CHOICE_TEXT, min, max);
+
+
+    System.out.println("Entrer le nom de la catégorie ");
+    String categoryName = in.nextLine().trim();
+
+
+    Object[] resultCat = categoryRepository.findMinAndMaxId();
+
+
+    Category category = categoryRepository.findById(categoryId)
+        .orElseThrow(() -> new IllegalArgumentException("Catégorie introuvable"));
+
+    categoryService.updateCategory(categoryId, categoryName);
+
+
   }
 
   private void displayAllArticlesFromCategoryMenu() {
