@@ -164,12 +164,17 @@ public class ConsoleMenus {
   }
 
   private void addCategoryMenu() {
+    System.out.println("Entrer le nom de la nouvelle catégorie ");
+    String categoryName = in.nextLine().trim();
+    categoryRepository.save(new Category(categoryName));
+    System.out.println("La catégorie a bien été ajoutée");
   }
 
   private void displayCategoryMenu() {
   }
 
   private void deleteCategoryMenu() {
+
   }
 
   private void modifyCategoryMenu() {
