@@ -2,10 +2,7 @@ package com.example.demo;
 
 import com.example.demo.dao.ArticleRepository;
 import com.example.demo.dao.CategoryRepository;
-import com.example.demo.entities.Article;
-import com.example.demo.entities.Category;
-import com.example.demo.service.ArticleService;
-import java.util.Optional;
+import com.example.demo.ui.ConsoleMenus;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,33 +23,37 @@ public class DemoApplication implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    //categoryRepository.save(new Category("Smartphone"));
-    //articleRepository.save(new Article("S9","Samsung",250));
-//    for (Article article : articleRepository.findByBrand("S9")) {
-//      System.out.println(article);
-//    }
-//    for (Article article : articleRepository.findByBrandAndPrice("Samsung",250)){
-//      System.out.println(article);
-//    }
-//    for (Article article : articleRepository.findByBrandAndPriceGreaterThan("Samsung",300)){
-//      System.out.println(article);
-//    }
 
-//    Category smartphone = categoryRepository.save(new Category("Smartphone"));
-//    Category tablet = categoryRepository.save(new Category("Tablet"));
-//    Category pc = categoryRepository.save(new Category("Pc"));
-//
-//    articleRepository.save(new Article("S10", "Samsung", 500, smartphone));
-//    articleRepository.save(new Article("S9", "Samsung", 350, smartphone));
-//    articleRepository.save(new Article("MI10", "Xiaomi", 100, smartphone));
-//
-//    articleRepository.save(new Article("GalaxyTab", "Samsung", 450, tablet));
-//    articleRepository.save(new Article("Ipad", "Apple", 350, tablet));
-//
-//    articleRepository.save(new Article("R510", "Asus", 600, pc));
-//      for (Article article : articleRepository.findByCategoryId(4)) {
-//        System.out.println(article);
-//      }
+    var menus = new ConsoleMenus(categoryRepository,articleRepository);
+    menus.run();
+
+    /* categoryRepository.save(new Category("Smartphone"));
+    articleRepository.save(new Article("S9","Samsung",250));
+    for (Article article : articleRepository.findByBrand("S9")) {
+      System.out.println(article);
+    }
+    for (Article article : articleRepository.findByBrandAndPrice("Samsung",250)){
+      System.out.println(article);
+    }
+    for (Article article : articleRepository.findByBrandAndPriceGreaterThan("Samsung",300)){
+      System.out.println(article);
+    }
+
+    Category smartphone = categoryRepository.save(new Category("Smartphone"));
+    Category tablet = categoryRepository.save(new Category("Tablet"));
+    Category pc = categoryRepository.save(new Category("Pc"));
+
+    articleRepository.save(new Article("S10", "Samsung", 500, smartphone));
+    articleRepository.save(new Article("S9", "Samsung", 350, smartphone));
+    articleRepository.save(new Article("MI10", "Xiaomi", 100, smartphone));
+
+    articleRepository.save(new Article("GalaxyTab", "Samsung", 450, tablet));
+    articleRepository.save(new Article("Ipad", "Apple", 350, tablet));
+
+    articleRepository.save(new Article("R510", "Asus", 600, pc));
+      for (Article article : articleRepository.findByCategoryId(4)) {
+        System.out.println(article);
+      }
 
     Optional<Article> articleById = articleRepository.findById(1L);
     System.out.println(articleById);
@@ -84,6 +85,8 @@ public class DemoApplication implements CommandLineRunner {
 
     for (Article article : articleRepository.findAll()) {
       System.out.println(article);
-    }
+    }*/
+
+
   }
 }
