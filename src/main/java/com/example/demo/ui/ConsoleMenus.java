@@ -6,6 +6,7 @@ import com.example.demo.entities.Article;
 import com.example.demo.entities.Category;
 import com.example.demo.service.ArticleService;
 import com.example.demo.service.CategoryService;
+import java.util.Optional;
 import java.util.Scanner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -167,6 +168,23 @@ public class ConsoleMenus {
   }
 
   private void displayArticleMenu() {
+    System.out.println("Entrer l'id de l'article à afficher ");
+    for (Article article : articleRepository.findAll()) {
+      System.out.println(article);
+    }
+    Object[] result = articleRepository.findMinAndMaxId();
+    Object[] row = (Object[]) result[0];
+
+    long minId = ((Number) row[0]).longValue();
+    long maxId = ((Number) row[1]).longValue();
+
+    int min = (int) minId;
+    int max = (int) maxId;
+
+    long articleId = readInt(CHOICE_TEXT, min, max);
+    Optional<Article> article = articleRepository.findById(articleId);
+    System.out.println(article);
+
 
   }
 
