@@ -15,17 +15,24 @@ import org.springframework.data.domain.Pageable;
 public class ConsoleMenus {
 
     private final Scanner in = new Scanner(System.in);
-    private static final String CHOICE_TEXT = "Choose: ";
+    private static final String CHOICE_TEXT = "Votre choix : ";
     private final ArticleRepository articleRepository;
     private final CategoryRepository categoryRepository;
+    private final ArticleService articleService;
+    private final CategoryService categoryService;
 
-  public ConsoleMenus(CategoryRepository categoryRepository, ArticleRepository articleRepository) {
+  public ConsoleMenus(CategoryRepository categoryRepository,
+      ArticleRepository articleRepository,
+      CategoryService categoryService,
+      ArticleService articleService) {
     this.articleRepository = articleRepository;
     this.categoryRepository = categoryRepository;
+    this.categoryService = categoryService;
+    this.articleService = articleService;
   }
     public void run() {
-      mainMenu();   // blocks until user exits
-      System.out.println("Goodbye.");
+      mainMenu();
+      System.out.println("A bientôt.");
     }
     private void mainMenu() {
       while (true) {
@@ -43,7 +50,7 @@ public class ConsoleMenus {
         System.out.println("11) Afficher tous les articles d'une catégorie");
         System.out.println("0) Sortir du programme");
 
-        int choice = readInt(CHOICE_TEXT, 0, 12);
+        int choice = readInt(CHOICE_TEXT, 0, 11);
         switch (choice) {
           case 1 -> displayArticlesNoPagingMenu();
           case 2 -> displayArticlesPagingMenu(5);
@@ -57,7 +64,7 @@ public class ConsoleMenus {
           case 10 -> modifyCategoryMenu();
           case 11 -> displayAllArticlesFromCategoryMenu();
           case 0 -> { return; } // exit application
-          default -> {return;}
+          default -> System.out.println("Choix invalide.");
         }
       }
     }
@@ -116,9 +123,8 @@ public class ConsoleMenus {
           break;
 
         case "PAGE":
-          System.out.println("Combien de lignes par page ?");
-          int  nbPages  = in.nextInt();
-          displayArticlesPagingMenu(nbPages);
+          pageSize = readInt("Combien de lignes par page ? ", 1, 100);
+          pageNumber = 0;
           break;
 
         default:
@@ -148,16 +154,8 @@ public class ConsoleMenus {
       System.out.println(category.getId() + ")  " + category.getName());
     }
 
-    Object[] result = categoryRepository.findMinAndMaxId();
-    Object[] row = (Object[]) result[0];
 
-    long minId = ((Number) row[0]).longValue();
-    long maxId = ((Number) row[1]).longValue();
-
-    int min = (int) minId;
-    int max = (int) maxId;
-
-    long categoryId = readInt(CHOICE_TEXT, min, max);
+    long categoryId = readExistingCategoryId();
 
     Category category = categoryRepository.findById(categoryId)
         .orElseThrow(() -> new IllegalArgumentException("Catégorie introuvable"));
@@ -168,16 +166,7 @@ public class ConsoleMenus {
   private void displayArticleMenu() {
     System.out.println("Entrer l'id de l'article à afficher ");
     printAllArticles();
-    Object[] result = articleRepository.findMinAndMaxId();
-    Object[] row = (Object[]) result[0];
-
-    long minId = ((Number) row[0]).longValue();
-    long maxId = ((Number) row[1]).longValue();
-
-    int min = (int) minId;
-    int max = (int) maxId;
-
-    long articleId = readInt(CHOICE_TEXT, min, max);
+    long articleId = readExistingArticleId();
     Optional<Article> article = articleRepository.findById(articleId);
     System.out.println(article);
 
@@ -187,35 +176,23 @@ public class ConsoleMenus {
   private void deleteArticleMenu() {
     System.out.println("Entrer l'id de l'article à supprimer ");
     printAllArticles();
-    Object[] result = articleRepository.findMinAndMaxId();
-    Object[] row = (Object[]) result[0];
 
-    long minId = ((Number) row[0]).longValue();
-    long maxId = ((Number) row[1]).longValue();
+    long articleId = readExistingArticleId();
 
-    int min = (int) minId;
-    int max = (int) maxId;
+    try {
+      articleRepository.deleteById(articleId);
+      System.out.println("L'article a bien été supprimé.");
+    } catch (Exception e) {
+      System.out.println("Impossible de supprimer l'article : " + e.getMessage());
+    }
 
-    long articleId = readInt(CHOICE_TEXT, min, max);
-    articleRepository.deleteById(articleId);
-    System.out.println("L'article a bien été supprimé ");
   }
 
   private void modifyArticleMenu() {
     System.out.println("Entrer l'id de l'article à modifier ");
     printAllArticles();
 
-    Object[] result = articleRepository.findMinAndMaxId();
-    Object[] row = (Object[]) result[0];
-
-    long minId = ((Number) row[0]).longValue();
-    long maxId = ((Number) row[1]).longValue();
-
-    int min = (int) minId;
-    int max = (int) maxId;
-
-    long articleId = readInt(CHOICE_TEXT, min, max);
-    ArticleService articleService = new ArticleService(articleRepository);
+    long articleId = readExistingArticleId();
 
     System.out.println("Entrer la marque ");
     String brand = in.nextLine().trim();
@@ -228,18 +205,10 @@ public class ConsoleMenus {
       System.out.println(category.getId() + ")  " + category.getName());
     }
 
-    Object[] resultCat = categoryRepository.findMinAndMaxId();
-    Object[] rowCat = (Object[]) resultCat[0];
-
-    long minIdCat = ((Number) rowCat[0]).longValue();
-    long maxIdCat = ((Number) rowCat[1]).longValue();
-
-    int intMinIdCat = (int) minIdCat;
-    int intMaxIdCat = (int) maxIdCat;
-
-    long categoryId = readInt(CHOICE_TEXT, intMinIdCat, intMaxIdCat);
+    long categoryId = readExistingCategoryId();
     Category category = categoryRepository.findById(categoryId)
-        .orElseThrow(() -> new IllegalArgumentException("Catégorie introuvable"));
+        .orElseThrow(() -> new RuntimeException("Catégorie introuvable"));
+
 
     articleService.updateArticle(articleId, brand, description, price,category);
 
@@ -258,18 +227,14 @@ public class ConsoleMenus {
   private void deleteCategoryMenu() {
     System.out.println("Entrer l'id de la catégorie à supprimer ");
     printAllCategories();
-    Object[] result = categoryRepository.findMinAndMaxId();
-    Object[] row = (Object[]) result[0];
+    long categoryId = readExistingCategoryId();
+    try {
+      categoryRepository.deleteById(categoryId);
+      System.out.println("La catégorie a bien été supprimée.");
+    } catch (Exception e) {
+      System.out.println("Impossible de supprimer la catégorie : " + e.getMessage());
+    }
 
-    long minId = ((Number) row[0]).longValue();
-    long maxId = ((Number) row[1]).longValue();
-
-    int min = (int) minId;
-    int max = (int) maxId;
-
-    long categoryId = readInt(CHOICE_TEXT, min, max);
-    categoryRepository.deleteById(categoryId);
-    System.out.println("La catégorie a bien été supprimée ");
   }
 
   private void modifyCategoryMenu() {
@@ -284,7 +249,7 @@ public class ConsoleMenus {
 
 
 
-    CategoryService categoryService = new CategoryService(categoryRepository);
+
     categoryService.updateCategory(categoryId, categoryName);
 
 
@@ -350,6 +315,15 @@ public class ConsoleMenus {
     }
   }
 
+  private long readExistingArticleId() {
+    while (true) {
+      long id = readLong("Choisissez l'id de l'article : ");
+      if (articleRepository.existsById(id)) {
+        return id;
+      }
+      System.out.println("Article introuvable.");
+    }
+  }
   private void printAllArticles() {
     for (Article article : articleRepository.findAll()) {
       System.out.println(article);

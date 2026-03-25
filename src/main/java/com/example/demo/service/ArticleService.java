@@ -3,7 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dao.ArticleRepository;
 import com.example.demo.entities.Article;
 import com.example.demo.entities.Category;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import java.util.Optional;
 
 public class ArticleService {
   private final ArticleRepository articleRepository;

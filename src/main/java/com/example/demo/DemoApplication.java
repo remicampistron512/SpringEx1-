@@ -2,6 +2,8 @@ package com.example.demo;
 
 import com.example.demo.dao.ArticleRepository;
 import com.example.demo.dao.CategoryRepository;
+import com.example.demo.service.ArticleService;
+import com.example.demo.service.CategoryService;
 import com.example.demo.ui.ConsoleMenus;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -17,6 +19,13 @@ public class DemoApplication implements CommandLineRunner {
   @Autowired
   private ArticleRepository articleRepository;
 
+  @Autowired
+  private CategoryService categoryService;
+
+  @Autowired
+  private ArticleService articleService;
+
+
   public static void main(String[] args) {
     SpringApplication.run(DemoApplication.class, args);
   }
@@ -24,7 +33,7 @@ public class DemoApplication implements CommandLineRunner {
   @Override
   public void run(String... args) throws Exception {
 
-    var menus = new ConsoleMenus(categoryRepository,articleRepository);
+    var menus = new ConsoleMenus(categoryRepository,articleRepository,categoryService,articleService);
     menus.run();
 
     /* categoryRepository.save(new Category("Smartphone"));

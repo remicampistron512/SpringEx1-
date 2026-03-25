@@ -1,15 +1,13 @@
 package com.example.demo.entities;
 
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.Optional;
 
 @Entity
 public class Article implements Serializable {
