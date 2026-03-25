@@ -129,9 +129,7 @@ public class ConsoleMenus {
   }
 
   private void displayArticlesNoPagingMenu() {
-    for (Article article : articleRepository.findAll()) {
-      System.out.println(article);
-    }
+    printAllArticles();
   }
 
 
@@ -169,9 +167,7 @@ public class ConsoleMenus {
 
   private void displayArticleMenu() {
     System.out.println("Entrer l'id de l'article à afficher ");
-    for (Article article : articleRepository.findAll()) {
-      System.out.println(article);
-    }
+    printAllArticles();
     Object[] result = articleRepository.findMinAndMaxId();
     Object[] row = (Object[]) result[0];
 
@@ -190,9 +186,7 @@ public class ConsoleMenus {
 
   private void deleteArticleMenu() {
     System.out.println("Entrer l'id de l'article à supprimer ");
-    for (Article article : articleRepository.findAll()) {
-      System.out.println(article);
-    }
+    printAllArticles();
     Object[] result = articleRepository.findMinAndMaxId();
     Object[] row = (Object[]) result[0];
 
@@ -209,9 +203,7 @@ public class ConsoleMenus {
 
   private void modifyArticleMenu() {
     System.out.println("Entrer l'id de l'article à modifier ");
-    for (Article article : articleRepository.findAll()) {
-      System.out.println(article);
-    }
+    printAllArticles();
 
     Object[] result = articleRepository.findMinAndMaxId();
     Object[] row = (Object[]) result[0];
@@ -265,9 +257,7 @@ public class ConsoleMenus {
 
   private void deleteCategoryMenu() {
     System.out.println("Entrer l'id de la catégorie à supprimer ");
-    for (Category category : categoryRepository.findAll()) {
-      System.out.println(category);
-    }
+    printAllCategories();
     Object[] result = categoryRepository.findMinAndMaxId();
     Object[] row = (Object[]) result[0];
 
@@ -283,21 +273,10 @@ public class ConsoleMenus {
   }
 
   private void modifyCategoryMenu() {
-    System.out.println("Entrer l'id de la catégorie à modifier ");
-    for (Category category : categoryRepository.findAll()) {
-      System.out.println(category);
-    }
-    CategoryService categoryService = new CategoryService(categoryRepository);
-    Object[] result = categoryRepository.findMinAndMaxId();
-    Object[] row = (Object[]) result[0];
 
-    long minId = ((Number) row[0]).longValue();
-    long maxId = ((Number) row[1]).longValue();
+    printAllCategories();
 
-    int min = (int) minId;
-    int max = (int) maxId;
-
-    long categoryId = readInt(CHOICE_TEXT, min, max);
+    long categoryId = readExistingCategoryId();
 
 
     System.out.println("Entrer le nom de la catégorie ");
@@ -305,7 +284,7 @@ public class ConsoleMenus {
 
 
 
-
+    CategoryService categoryService = new CategoryService(categoryRepository);
     categoryService.updateCategory(categoryId, categoryName);
 
 
@@ -313,19 +292,8 @@ public class ConsoleMenus {
 
   private void displayAllArticlesFromCategoryMenu() {
     System.out.println("Entrer l'id de la catégorie à afficher ");
-    for (Category category : categoryRepository.findAll()) {
-      System.out.println(category);
-    }
-    Object[] result = categoryRepository.findMinAndMaxId();
-    Object[] row = (Object[]) result[0];
-
-    long minId = ((Number) row[0]).longValue();
-    long maxId = ((Number) row[1]).longValue();
-
-    int min = (int) minId;
-    int max = (int) maxId;
-
-    int categoryId = readInt(CHOICE_TEXT, min, max);
+    printAllCategories();
+    int categoryId = (int) readExistingCategoryId();
     for (Article article : articleRepository.findByCategoryId(categoryId)){
       System.out.println(article);
     }
@@ -359,6 +327,41 @@ public class ConsoleMenus {
       }
     }
   }
+
+  private long readLong(String prompt) {
+    while (true) {
+      System.out.print(prompt);
+      String input = in.nextLine();
+
+      try {
+        return Long.parseLong(input.trim());
+      } catch (NumberFormatException e) {
+        System.out.println("Veuillez entrer un nombre valide.");
+      }
+    }
+  }
+  private long readExistingCategoryId() {
+    while (true) {
+      long id = readLong("Choisissez l'id de la catégorie : ");
+      if (categoryRepository.existsById(id)) {
+        return id;
+      }
+      System.out.println("Catégorie introuvable.");
+    }
+  }
+
+  private void printAllArticles() {
+    for (Article article : articleRepository.findAll()) {
+      System.out.println(article);
+    }
+  }
+
+  private void printAllCategories() {
+    for (Category category : categoryRepository.findAll()) {
+      System.out.println(category);
+    }
+  }
+
 
 }
 
