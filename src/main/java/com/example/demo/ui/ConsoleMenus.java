@@ -137,10 +137,13 @@ public class ConsoleMenus {
   private void addArticleMenu() {
     System.out.println("Entrer la marque ");
     String brand = in.nextLine().trim();
+
     System.out.println("Entrer une description");
     String description = in.nextLine().trim();
+
     System.out.println("Renseigner le prix");
-    double price = in.nextInt();
+    double price = readDouble(CHOICE_TEXT);
+
     System.out.println("Choisissez la catégorie");
     for (Category category : categoryRepository.findAll()){
       System.out.println(category.getId() + ")  " + category.getName());
@@ -154,7 +157,9 @@ public class ConsoleMenus {
 
     int min = (int) minId;
     int max = (int) maxId;
+
     long categoryId = readInt(CHOICE_TEXT, min, max);
+
     Category category = categoryRepository.findById(categoryId)
         .orElseThrow(() -> new IllegalArgumentException("Catégorie introuvable"));
 
@@ -207,7 +212,7 @@ public class ConsoleMenus {
     System.out.println("Entrer une description");
     String description = in.nextLine().trim();
     System.out.println("Renseigner le prix");
-    double price = in.nextInt();
+    double price = readDouble(CHOICE_TEXT);
     System.out.println("Choisissez la catégorie");
     for (Category category : categoryRepository.findAll()){
       System.out.println(category.getId() + ")  " + category.getName());
@@ -320,11 +325,22 @@ public class ConsoleMenus {
         }
         return v;
       } catch (NumberFormatException e) {
-        System.out.println("Invalid number.");
+        System.out.println("Nombre invalide.");
       }
     }
   }
 
+  private double readDouble(String prompt) {
+    while (true) {
+      System.out.print(prompt);
+      String s = in.nextLine().trim();
+      try {
+        return Double.parseDouble(s);
+      } catch (NumberFormatException e) {
+        System.out.println("Nombre invalide.");
+      }
+    }
+  }
 
 }
 
