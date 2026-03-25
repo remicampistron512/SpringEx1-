@@ -1,8 +1,5 @@
 package com.example.demo.service;
-
-import com.example.demo.dao.ArticleRepository;
 import com.example.demo.dao.CategoryRepository;
-import com.example.demo.entities.Article;
 import com.example.demo.entities.Category;
 
 public class CategoryService {
@@ -13,7 +10,7 @@ public class CategoryService {
   public Category updateCategory(Long id,String name ) {
 
     Category category = categoryRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Category  not found with id: " + id));
+        .orElseThrow(() -> new RuntimeException("Catégorie introuvable avec l'id: " + id));
 
     category.setName(name);
 
