@@ -7,14 +7,13 @@ public class CategoryService {
   public CategoryService(CategoryRepository categoryRepository) {
     this.categoryRepository = categoryRepository;
   }
-  public Category updateCategory(Long id,String name ) {
+  public void updateCategory(Long id,String name ) {
 
     Category category = categoryRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Catégorie introuvable avec l'id: " + id));
 
     category.setName(name);
 
-
-    return categoryRepository.save(category);
+    categoryRepository.save(category);
   }
 }

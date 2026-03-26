@@ -254,9 +254,7 @@ public class ConsoleMenus {
   }
 
   private void displayCategoryMenu() {
-    /*
-     * Aucune utilité pour l'instant
-     */
+       // Aucune utilité pour l'instant
   }
 
   private void deleteCategoryMenu() {
