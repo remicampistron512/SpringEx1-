@@ -78,7 +78,7 @@ public class DemoApplication implements CommandLineRunner {
     //Exercice 1.3 : Ajouter une méthode qui permette de renvoyer tous les articles contenants
     //telle description et telle marque
 
-    for (Article article : articleRepository.findByDescriptionAndBrand("Samsung","Samsung")) {
+    for (Article article : articleRepository.findByDescriptionAndBrand("Redmi","Xiaomi")) {
       System.out.println(article);
     }
 
@@ -87,15 +87,22 @@ public class DemoApplication implements CommandLineRunner {
     articleRepository.deleteById(1L);
 
     //Exercice 1.5 : Ajouter une méthode qui permet de mettre à jour un article à partir de l’id
+
     ArticleService articleService = new ArticleService(articleRepository);
     articleService.updateArticle(2L, "Samsung", "S10 Updated", 550);
 
     //Exercice 1.6 : Ajouter des moyens pour afficher les noms des catégories classés par ordre
     //croissant puis décroissant
 
-    for (Category category : categoryRepository.findAll()){
-      System.out.println(category);
-    }
+    // Ordre croissant
+    System.out.println("=== Catégories ASC ===");
+    categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "name"))
+            .forEach(category -> System.out.println(category.getName()));
+
+    // Ordre décroissant
+    System.out.println("=== Catégories DESC ===");
+    categoryRepository.findAll(Sort.by(Sort.Direction.DESC, "name"))
+            .forEach(category -> System.out.println(category.getName()));
 
     //Exercice 1.7 : Ajouter une méthode de votre choix
 
