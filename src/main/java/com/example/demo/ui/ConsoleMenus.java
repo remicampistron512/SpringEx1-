@@ -84,6 +84,7 @@ public class ConsoleMenus {
 
   /**
    * Affiche les articles avec pagination
+   *
    * @param pageSize le nombre de lignes à afficher
    */
   private void displayArticlesPagingMenu(int pageSize) {
@@ -162,16 +163,14 @@ public class ConsoleMenus {
    * Ajoute un article
    */
   private void addArticleMenu() {
-    System.out.println("Entrer la marque ");
-    String brand = in.nextLine().trim();
 
-    System.out.println("Entrer une description");
-    String description = in.nextLine().trim();
+    String brand = readStr("Entrer la marque : ");
 
-    System.out.println("Renseigner le prix");
-    double price = readDouble(CHOICE_TEXT);
+    String description = readStr("Entrer une description : ");
 
-    System.out.println("Choisissez la catégorie");
+    double price = readDouble("Renseigner le prix : ");
+
+    System.out.println("Choisissez la catégorie : ");
     for (Category category : categoryRepository.findAll()) {
       System.out.println(category.getId() + ")  " + category.getName());
     }
@@ -224,13 +223,13 @@ public class ConsoleMenus {
 
     long articleId = readExistingArticleId();
 
-    System.out.println("Entrer la marque ");
-    String brand = in.nextLine().trim();
-    System.out.println("Entrer une description");
-    String description = in.nextLine().trim();
-    System.out.println("Renseigner le prix");
-    double price = readDouble(CHOICE_TEXT);
-    System.out.println("Choisissez la catégorie");
+    String brand = readStr("Entrer la marque : ");
+
+    String description = readStr("Entrer une description : ");
+
+    double price = readDouble("Renseigner le prix : ");
+
+    System.out.println("Choisissez la catégorie : ");
     for (Category category : categoryRepository.findAll()) {
       System.out.println(category.getId() + ")  " + category.getName());
     }
@@ -247,14 +246,13 @@ public class ConsoleMenus {
    * Ajoute une catégorie
    */
   private void addCategoryMenu() {
-    System.out.println("Entrer le nom de la nouvelle catégorie ");
-    String categoryName = in.nextLine().trim();
+    String categoryName = readStr("Entrer le nom de la nouvelle catégorie : ");
     categoryRepository.save(new Category(categoryName));
     System.out.println("La catégorie a bien été ajoutée");
   }
 
   private void displayCategoryMenu() {
-       // Aucune utilité pour l'instant
+    // Aucune utilité pour l'instant
   }
 
   private void deleteCategoryMenu() {
@@ -279,8 +277,7 @@ public class ConsoleMenus {
 
     long categoryId = readExistingCategoryId();
 
-    System.out.println("Entrer le nom de la catégorie ");
-    String categoryName = in.nextLine().trim();
+    String categoryName = readStr("Entrer le nom de la catégorie : ");
 
     categoryService.updateCategory(categoryId, categoryName);
 
@@ -301,9 +298,10 @@ public class ConsoleMenus {
 
   /**
    * Permet de saisir un entier et de vérifier sa validité
+   *
    * @param prompt Message à afficher
-   * @param min Valeur minimum
-   * @param max Valeur maximum
+   * @param min    Valeur minimum
+   * @param max    Valeur maximum
    * @return la valeur nettoyée
    */
   private int readInt(String prompt, int min, int max) {
@@ -325,8 +323,9 @@ public class ConsoleMenus {
 
   /**
    * Permet de saisir un double et de vérifier sa validité
+   *
    * @param prompt Message à afficher
-   * @return  la valeur nettoyée
+   * @return la valeur nettoyée
    */
   private double readDouble(String prompt) {
     while (true) {
@@ -340,6 +339,12 @@ public class ConsoleMenus {
     }
   }
 
+  /**
+   * Permet de lire un entier long et de le valider
+   *
+   * @param prompt Message à afficher
+   * @return la valeur nettoyée
+   */
   private long readLong(String prompt) {
     while (true) {
       System.out.print(prompt);
@@ -354,7 +359,24 @@ public class ConsoleMenus {
   }
 
   /**
+   * Valide une chaîne
+   */
+  private String readStr(String prompt) {
+    while (true) {
+      System.out.print(prompt);
+      String s = in.nextLine().trim();
+
+      if (!s.isEmpty()) {
+        return s;
+      }
+
+      System.out.println("Le texte saisi ne peut être vide. Merci de réessayer .");
+    }
+  }
+
+  /**
    * Permet de saisir une id de catégorie et de voir si elle existe
+   *
    * @return l'id de catégorie valide
    */
   private long readExistingCategoryId() {
@@ -369,6 +391,7 @@ public class ConsoleMenus {
 
   /**
    * Permet de saisir un id d'article et de vérifier si l'article existe
+   *
    * @return l'id d'un article valide
    */
   private long readExistingArticleId() {
