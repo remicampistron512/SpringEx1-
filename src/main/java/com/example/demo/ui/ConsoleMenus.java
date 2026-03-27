@@ -180,7 +180,12 @@ public class ConsoleMenus {
     Category category = categoryRepository.findById(categoryId)
         .orElseThrow(() -> new IllegalArgumentException("Catégorie introuvable"));
 
-    articleRepository.save(new Article(description, brand, price, category));
+    try {
+      articleRepository.save(new Article(description, brand, price, category));
+      System.out.println("Article ajouté avec succès");
+    } catch (Exception e) {
+      System.out.println("Erreur en ajoutant l'article: " + e.getMessage());
+    }
   }
 
   /**
@@ -251,10 +256,16 @@ public class ConsoleMenus {
     System.out.println("La catégorie a bien été ajoutée");
   }
 
+  /**
+   * Affiche une catégorie
+   */
   private void displayCategoryMenu() {
     // Aucune utilité pour l'instant
   }
 
+  /**
+   * Supprime une catégorie
+   */
   private void deleteCategoryMenu() {
     System.out.println("Entrer l'id de la catégorie à supprimer ");
     printAllCategories();
